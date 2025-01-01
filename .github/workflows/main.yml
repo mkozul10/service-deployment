@@ -39,27 +39,27 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Step 1: Checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Step 2: Build Docker image
+      - name: Build Docker image
         run: |
           docker build -f docker/Dockerfile -t ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} .
 
-      - name: Step 3: Log in to Docker Hub
+      - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
 
-      - name: Step 4: Push image to Docker Hub
+      - name: Push image to Docker Hub
         run: |
           docker tag ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
           docker push ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
-      - name: Step 5: Cleanup
+      - name: Cleanup
         if: ${{ failure() }}
-        run: | 
+        run: |
           docker image rm ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
           docker image rm ${{ env.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
@@ -72,7 +72,7 @@ jobs:
           echo "PORT=${{ secrets.APP_PORT }}" >> .env
           echo "NODE_ENV=${{ secrets.APP_NODE_ENV }}" >> .env
 
-      - name: Step 2: Deploy to DigitalOcean droplet via SSH
+      - name: Deploy to DigitalOcean droplet via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ env.DIGITALOCEAN_DROPLET_HOST }}
@@ -89,6 +89,6 @@ jobs:
               docker rmi $image_id
             fi
             docker run -d -p 3000:3000 --env-file .env --name ${{ env.DOCKER_CONTAINER_NAME }} ${{ env.DOCKER_IMAGE_NAME }}:latest
-      
-      - name: Step 3: Clean up .env file
+
+      - name: Clean up .env file
         run: rm .env
