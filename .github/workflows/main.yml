@@ -67,11 +67,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: docker-build
     steps:
-      - name: Create .env file from GitHub secrets
-        run: |
-          echo "PORT=${{ secrets.APP_PORT }}" >> .env
-          echo "NODE_ENV=${{ secrets.APP_NODE_ENV }}" >> .env
-
       - name: Deploy to DigitalOcean droplet via SSH
         uses: appleboy/ssh-action@master
         with:
@@ -81,6 +76,9 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 22
           script: |
+            echo "Creating .env file on the droplet..."
+            echo "PORT=${{ secrets.APP_PORT }}" > .env
+            echo "NODE_ENV=${{ secrets.APP_NODE_ENV }}" >> .env
             docker pull $(echo "${{ env.DOCKER_USERNAME }}")/$(echo "${{ env.DOCKER_USERNAME }}-${{ env.DOCKER_IMAGE_NAME }}"):latest
             running_container_id=$(docker ps | grep "$(echo "${{ env.DOCKER_IMAGE_NAME }}")" | awk '{print $1}')
             if [ -n "$running_container_id" ]; then
@@ -90,6 +88,3 @@ jobs:
               docker rmi $image_id
             fi
             docker run -d -p 3000:3000 --env-file .env --name $(echo "${{ env.DOCKER_CONTAINER_NAME }}") $(echo "${{ env.DOCKER_USERNAME }}")/$(echo "${{ env.DOCKER_USERNAME }}-${{ env.DOCKER_IMAGE_NAME }}"):latest
-
-      - name: Clean up .env file
-        run: rm .env
