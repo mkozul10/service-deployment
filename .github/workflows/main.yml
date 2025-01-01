@@ -81,7 +81,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 22
           script: |
-            docker pull $(echo "${{ env.DOCKER_USERNAME }}-${{ env.DOCKER_IMAGE_NAME }}"):latest
+            docker pull $(echo "${{ env.DOCKER_USERNAME }}")/$(echo "${{ env.DOCKER_USERNAME }}-${{ env.DOCKER_IMAGE_NAME }}"):latest
             running_container_id=$(docker ps | grep "$(echo "${{ env.DOCKER_IMAGE_NAME }}")" | awk '{print $1}')
             if [ -n "$running_container_id" ]; then
               docker stop $running_container_id
@@ -89,7 +89,7 @@ jobs:
               image_id=$(docker images | grep "$(echo "${{ env.DOCKER_IMAGE_NAME }}")" | awk '{print $3}')
               docker rmi $image_id
             fi
-            docker run -d -p 3000:3000 --env-file .env --name $(echo "${{ env.DOCKER_CONTAINER_NAME }}") $(echo "${{ env.DOCKER_IMAGE_NAME }}"):latest
+            docker run -d -p 3000:3000 --env-file .env --name $(echo "${{ env.DOCKER_CONTAINER_NAME }}") $(echo "${{ env.DOCKER_USERNAME }}")/$(echo "${{ env.DOCKER_USERNAME }}-${{ env.DOCKER_IMAGE_NAME }}"):latest
 
       - name: Clean up .env file
         run: rm .env
