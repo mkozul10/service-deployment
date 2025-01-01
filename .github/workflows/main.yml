@@ -78,7 +78,7 @@ jobs:
           host: ${{ env.DIGITALOCEAN_DROPLET_HOST }}
           username: root
           key: ${{ env.DIGITAL_OCEAN_SSH_KEY }}
-          key_passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 22
           script: |
             docker pull $(echo "${{ env.DOCKER_USERNAME }}-${{ env.DOCKER_IMAGE_NAME }}"):latest
