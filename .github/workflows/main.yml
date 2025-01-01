@@ -11,7 +11,7 @@ env:
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   DOCKER_IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME }}
   DIGITALOCEAN_DROPLET_HOST: ${{ secrets.DIGITALOCEAN_DROPLET_HOST }}
-  DIGITAL_OCENAN_SSH_KEY: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+  DIGITALOCEAN_SSH_KEY: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
   DOCKER_CONTAINER_NAME: my-container-name-1
   DOCKER_EMAIL: ${{ secrets.DOCKER_EMAIL }}
 
@@ -77,7 +77,7 @@ jobs:
         with:
           host: ${{ env.DIGITALOCEAN_DROPLET_HOST }}
           username: root
-          key: ${{ env.DIGITAL_OCEAN_SSH_KEY }}
+          key: ${{ env.DIGITALOCEAN_SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           port: 22
           script: |
