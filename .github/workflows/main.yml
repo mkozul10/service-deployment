@@ -78,7 +78,7 @@ jobs:
           host: ${{ env.DIGITALOCEAN_DROPLET_HOST }}
           username: root
           key: ${{ env.DIGITAL_OCEAN_SSH_KEY }}
-          password: ${{ secrets.DIGITALOCEAN_SSH_PASSWORD }}
+          port: 22
           script: |
             docker pull $(echo "${{ env.DOCKER_USERNAME }}-${{ env.DOCKER_IMAGE_NAME }}"):latest
             running_container_id=$(docker ps | grep "$(echo "${{ env.DOCKER_IMAGE_NAME }}")" | awk '{print $1}')
